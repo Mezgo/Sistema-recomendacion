@@ -33,7 +33,7 @@ def join_csv(path: str, files: list):
         df2 = pd.read_csv(path + e)
         df = pd.concat([df, df2], ignore_index=True)
         print(df.shape)
-    print(df.shape)
+    
     return df
 
 
@@ -72,6 +72,7 @@ def id_generator(df, prefix: str):
 def get_df(path: str, name: str):
     """This returns a dataframe for each doc in the path
     """
+    print(f'Generando DF a partir de {name}')
     df = pd.read_csv(path + name)
     prefix = get_prefix(name)
     print(prefix)
@@ -108,15 +109,24 @@ def convert_2_date(date: str):
         return date.date()
     except:
         "null value"
+        
+def tstamp_2_date(t:str):
+    '''turns a timestamp into date'''
+    return datetime.fromtimestamp(t).date()
 
-path = r'ratings/'
+path = r'models/ratings/'
 files = get_file_names(path)
 
 df = join_csv(path, files)
 
+print('renombrando columnas')
 df.rename(columns={'rating':'score'}, inplace=True)
 
-path = r'./'
+print('convirtiendo timestamp a date')
+for i, e in enumerate(df['timestamp']):
+    df['timestamp'][i] = tstamp_2_date(e)
+
+path = r'models/'
 streamPlatforms = get_file_names(path)
 
 # en esta lista se almacenaran los df de cada plataforma
@@ -139,13 +149,17 @@ Netflix = get_df(path, streamPlatforms[3])
 platforms.append(Netflix)
 
 # se unen los datos de las plataformas en un solo dataframe
+print('Uniendo los datos de las plataformas')
 SP_dataset = join_df([Amazon, Disney_plus, Hulu, Netflix])
 
+print('Reemplazando NaN por G')
 SP_dataset['rating'].replace(np.NaN, 'G', inplace=True)
 
+print('Convirtiendo fecha en string a date type')
 for i, e in enumerate(SP_dataset['date_added']):
     SP_dataset['date_added'].iloc[i] = convert_2_date(e)
 
+print('convirtiendo duration en int y type')
 SP_dataset.insert(loc = 9,
                   column ='duration_int',
                   value = 0)
@@ -160,21 +174,22 @@ for i, e in enumerate(SP_dataset['duration']):
         SP_dataset['duration_type'][i] = e[1]
         SP_dataset['duration_int'][i] = int(int(e[0]))
 
-f = SP_dataset.columns
 
+print('Convirtiendo todos los campos a minusculas')
+f = SP_dataset.columns
 for e in f:
     try:
         SP_dataset[e] = SP_dataset[e].str.lower()
     except:
         print('null value')
 
+print('Reorganizando SP_dataset')
 temp = SP_dataset.pop('id')
 SP_dataset.insert(0, temp.name, temp)
 del SP_dataset['duration']
 del SP_dataset['show_id']
 
-print(df)
-print(SP_dataset)
-
-df.to_csv('ratings/scores.csv', index = False)
-SP_dataset.to_csv('./sp_dataset.csv', index = False)
+print('creando csv de scores')
+df.to_csv('models/ratings/scores.csv', index = False)
+print('creando csv de plataformas de streaming')
+SP_dataset.to_csv('models/sp_dataset.csv', index = False)
