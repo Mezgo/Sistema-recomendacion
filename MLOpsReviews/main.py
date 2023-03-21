@@ -8,8 +8,8 @@ platform_dicc = {
     'd':'Disney Plus',
     'n':'Netflix'
 }
-scores_df = pd.read_csv('models/ratings/scores.csv')
-sp_dataset = pd.read_csv('models/sp_dataset.csv')
+scores_df = pd.read_csv('data/ratings/scores.csv')
+sp_dataset = pd.read_csv('data/sp_dataset.csv')
 
 app = FastAPI()
 

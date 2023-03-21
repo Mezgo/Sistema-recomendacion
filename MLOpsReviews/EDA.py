@@ -2,9 +2,9 @@ import ydata_profiling as pdp
 import pandas as pd
 
 print('Fetching scores')
-scores_df = pd.read_csv(r'models/ratings/scores.csv')
+scores_df = pd.read_csv(r'data/ratings/scores.csv')
 print('Fetching platfomrs')
-SP_dataset = pd.read_csv(r'models/sp_dataset.csv')
+SP_dataset = pd.read_csv(r'data/sp_dataset.csv')
 
 scores_df.rename(columns={'movieId':'id'}, inplace=True)
 

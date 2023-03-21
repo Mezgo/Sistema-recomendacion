@@ -2,14 +2,12 @@ from datetime import datetime
 import os
 import pandas as pd
 import numpy as np
-import glob
 
 
 def get_file_names(path: str):
     """
     get the file names from path
     """
-    
     files = []
     for file in os.scandir(path):
         if file.is_file():
@@ -22,7 +20,6 @@ def get_file_names(path: str):
 def join_csv(path: str, files: list):
     '''
     join the csv files within path into one dataframe
-    
     '''
     df = pd.read_csv(path + files[0])
     print(df.shape)
@@ -63,14 +60,14 @@ def id_generator(df, prefix: str):
     '''
     generates an id conformed by a prefix & the id already in the dataframe
     '''
-
     print("id_generator")
     for e in range(len(df)):
         df["id"] = prefix + df.iloc[:, 0]
     return df
 
 def get_df(path: str, name: str):
-    """This returns a dataframe for each doc in the path
+    """
+    This returns a dataframe for each doc in the path
     """
     print(f'Generando DF a partir de {name}')
     df = pd.read_csv(path + name)
@@ -114,7 +111,7 @@ def tstamp_2_date(t:str):
     '''turns a timestamp into date'''
     return datetime.fromtimestamp(t).date()
 
-path = r'models/ratings/'
+path = r'data/ratings/'
 files = get_file_names(path)
 
 df = join_csv(path, files)
@@ -126,7 +123,7 @@ print('convirtiendo timestamp a date')
 for i, e in enumerate(df['timestamp']):
     df['timestamp'][i] = tstamp_2_date(e)
 
-path = r'models/'
+path = r'data/'
 streamPlatforms = get_file_names(path)
 
 # en esta lista se almacenaran los df de cada plataforma
