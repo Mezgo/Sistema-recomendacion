@@ -186,7 +186,11 @@ SP_dataset.insert(0, temp.name, temp)
 del SP_dataset['duration']
 del SP_dataset['show_id']
 
+print('Reorganizando df')
+temp = df.pop('movieId')
+df.insert(0, temp.name, temp)
+
 print('creando csv de scores')
-df.to_csv('models/ratings/scores.csv', index = False)
+df.to_csv('data/ratings/scores.csv', index = False)
 print('creando csv de plataformas de streaming')
-SP_dataset.to_csv('models/sp_dataset.csv', index = False)
+SP_dataset.to_csv('data/sp_dataset.csv', index = False)
