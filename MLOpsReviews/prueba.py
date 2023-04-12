@@ -1,14 +1,9 @@
-import pandas as pd
 from datetime import datetime
+import pandas as pd
 import numpy as np
 
-scores_df = pd.read_csv('data/ratings/scores.csv')
-platform_dicc = {
-    'a':'Amazon',
-    'h':'Hulu',
-    'd':'Disney Plus',
-    'n':'Netflix'
-}
+scores_df = pd.read_csv("data/ratings/scores.csv")
+platform_dicc = {"a": "Amazon", "h": "Hulu", "d": "Disney Plus", "n": "Netflix"}
 # temp = scores_df
 # scored = 4.0
 # year = 2015
@@ -28,10 +23,10 @@ platform_dicc = {
 # print(f'On {x}, {qant[0]} is the amount of shows that are upon {scored} on the {year}')
 
 ######################################################
-platform = 'hulu'
-sp_dataset = pd.read_csv('data/sp_dataset.csv')
-'''Gets the number of shows on the specified platform'''
-temp_df = sp_dataset[sp_dataset['id'].str[0] == platform[0].lower()]
+platform = "hulu"
+sp_dataset = pd.read_csv("data/sp_dataset.csv")
+"""Gets the number of shows on the specified platform"""
+temp_df = sp_dataset[sp_dataset["id"].str[0] == platform[0].lower()]
 temp_df = sp_dataset.query("type == 'movie'")
-p_name = platform_dicc.get(temp_df['id'].iloc[0][0])
+p_name = platform_dicc.get(temp_df["id"].iloc[0][0])
 print(f'The total amount of shows in {p_name} is: {temp_df["id"].count()}')
