@@ -240,6 +240,87 @@ A lo largo de esta definicion se realiza lo siguiente:
 
 3. Se obtiene el nombre de la plataforma a travez del diccionario creado anteriormente.
 
+__Se genera la quinta ruta, la cual contiene la consulta `prod_per_county`.__
+
+```python
+def prod_per_county(type: str, country: str, year: int):
+    temp_df = sp_dataset
+    temp_df = temp_df[temp_df.release_year == year]
+    temp_df = temp_df[temp_df.country == country.lower()]
+    temp_df = temp_df[temp_df.type == type.lower()]
+
+    return {
+        "Pais": country.capitalize(),
+        "Anio": year,
+        "Peliculas": int(temp_df.shape[0])
+    }
+```
+
+En la cual se desarrolla lo siguiente:
+
+0. Se definen las variables que van a ser introducidas en la consulta
+
+1. Se crea una copia del data set original.
+
+2. Se filtra el contenido por el anio que haya sido ingresado.
+
+3. Se filtra segun el pais.
+
+4. Se filtra segun el tipo de contenido que se especifique.
+
+5. Se retorna un diccionario con los valores correstpondientes a la cantidad de contenido de un tipo especifico, en un anio y pais dados.
+
+__Se genera la sexta ruta, la cual contiene la consulta `get_contents`.__
+
+```python
+def get_contents(rating: str):
+    temp_df = sp_dataset
+    temp_df = temp_df[temp_df.rating == rating.lower()]
+
+    return int(temp_df.shape[0])
+```
+
+A lo largo de esta definicion se desarrolla lo siguiente:
+
+0. Se define la variable de entrada `rating`.
+
+1. Se hace una copia del dataset original.
+
+2. Se filtra el _rating_ especificado.
+
+3. Se retorna la cantidad de shows que satisfacen el filtro anterior.
+
+__Se genera la sexta ruta, la cual llama a un ___sistema de recomendacion___ el cual se anida bajo la consulta `get_recommendation`.__
+
+```python
+def get_recommendation(titulo: str):
+    temp_df = big_df[["title", "mean"]]
+    X = temp_df[["mean"]].values
+    scaler = StandardScaler()
+    X_std = scaler.fit_transform(X)
+
+    k = 5
+    knn = NearestNeighbors(n_neighbors=k, algorithm="ball_tree")
+    knn.fit(X_std)
+    movie_index = temp_df.title.isin([titulo]).idxmax()
+    distances, indices = knn.kneighbors(X_std[movie_index].reshape(1, -1))
+    reco = []
+    for i in range(0, len(distances[0])):
+        idx = indices[0][i]
+        reco.append([temp_df.iloc[idx]["title"], temp_df.iloc[idx]["mean"]])
+    reco = sorted(reco, key=lambda x: x[1], reverse=True)
+    reco = [peli for el in reco for peli in el if isinstance(peli, str)]
+    return reco
+```
+
+El anterior fragmento de codigo funciona de la siguiente manera:
+
+0. Se declara la variable de entrada `titulo`.
+
+1. Se duplican las columnas `title` y `mean` del dataset original.
+
+2. 
+
 ---
 
 ## EDA
