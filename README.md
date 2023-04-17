@@ -319,7 +319,21 @@ El anterior fragmento de codigo funciona de la siguiente manera:
 
 1. Se duplican las columnas `title` y `mean` del dataset original.
 
-2. 
+2. Se extraen los valores de `mean`.
+
+3. Se estandarizan esos valores.
+
+4. Se deinen el modelo _k-vecinos_ y se establece en 5 la cantidad de vecinos.
+
+5. Se busca el titulo ingresado, en el dataset.
+
+6. Se calculan sus vecinos cercanos.
+
+7. Se agregan a una lista.
+
+8. Se ordena la lista.
+
+9. Se retorna la lista de recomendaciones.
 
 ---
 
