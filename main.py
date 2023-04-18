@@ -117,7 +117,7 @@ def get_actor(platform: str, year: int):
                                reverse=True)
     del actores_f_actores[0]
 
-    return actores_f_actores[0]
+    return actores_f_actores[0][0]
 
 
 @app.get("/prod_per_county/{type}/{country}/{year}")
