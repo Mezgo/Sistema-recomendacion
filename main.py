@@ -2,6 +2,7 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 from fastapi import FastAPI
 import pandas as pd
+import numpy as np
 
 
 platform_dicc = {"a": "Amazon",
@@ -95,11 +96,28 @@ def get_count_platform(platform: str):
 def get_actor(platform: str, year: int):
     """Returns the actor who appears
     the most in the specified year and platform"""
+
     temp_df = sp_dataset
     # get platform
     temp_df = sp_dataset[sp_dataset["id"].str[0] == platform[0].lower()]
     # get year
     temp_df = temp_df[temp_df["release_year"] == year]
+
+    temp_df.cast.replace(np.nan, '', inplace=True)
+
+    # get actor
+    temp_df['cast'] = temp_df.cast.str.split(',')
+    actores = list(temp_df["cast"])
+    actores = [actor for cast in actores for actor in cast]
+    f_actores = [actores.count(el) for el in actores]
+    actores_f_actores = list(zip(actores, f_actores))
+    actores_f_actores = set(actores_f_actores)
+    actores_f_actores = sorted(actores_f_actores,
+                               key=lambda x: x[1],
+                               reverse=True)
+    del actores_f_actores[0]
+
+    return actores_f_actores[0]
 
 
 @app.get("/prod_per_county/{type}/{country}/{year}")

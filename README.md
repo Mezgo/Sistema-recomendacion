@@ -240,6 +240,58 @@ A lo largo de esta definicion se realiza lo siguiente:
 
 3. Se obtiene el nombre de la plataforma a travez del diccionario creado anteriormente.
 
+__Se genera la cuarta ruta, la cual contiene la consulta `get_actor`.__
+
+```python
+def get_actor(platform: str, year: int):
+    """Returns the actor who appears
+    the most in the specified year and platform"""
+
+    temp_df = sp_dataset
+    # get platform
+    temp_df = sp_dataset[sp_dataset["id"].str[0] == platform[0].lower()]
+    # get year
+    temp_df = temp_df[temp_df["release_year"] == year]
+
+    temp_df.cast.replace(np.nan, '', inplace=True)
+
+    # get actor
+    temp_df['cast'] = temp_df.cast.str.split(',')
+    actores = list(temp_df["cast"])
+    actores = [actor for cast in actores for actor in cast]
+    f_actores = [actores.count(el) for el in actores]
+    actores_f_actores = list(zip(actores, f_actores))
+    actores_f_actores = set(actores_f_actores)
+    actores_f_actores = sorted(actores_f_actores,
+                               key=lambda x: x[1],
+                               reverse=True)
+    del actores_f_actores[0]
+
+    return actores_f_actores[0]
+```
+
+La cual funciona de la siguiente manera:
+
+0. Se declaran las dos variables de entrada `platform` y `year`.
+
+1. Se hace una copia del dataser original.
+
+2. Se filtra por plataforma.
+
+3. Se filtra por anio.
+
+4. Se cambian los posibles datos nulo por espacios _str_ vacios.
+
+5. Se filtra por actor.
+
+6. Se convierte a la columna `cast` en una lista de anidada y dicha lista en una lista plana.
+
+7. Se extraen las frecuencias de los actores y se ordenan de forma desendente.
+
+8. Se empaquetan juntas las frecuencias con los nombres correspondientes y se elimina el primer elemento (espacios vacios)
+
+9. Se retorna el primer elemento de la lista
+
 __Se genera la quinta ruta, la cual contiene la consulta `prod_per_county`.__
 
 ```python
